@@ -11,13 +11,39 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imeNestedScroll
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,7 +91,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyDeepSeekChatTheme {
-                Scaffold(modifier = Modifier.imePadding()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     ChatScreen(
                         chatBotApi = chatBotApi,
                         modifier = Modifier.padding(innerPadding)
@@ -76,6 +102,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ChatScreen(chatBotApi: ChatBotApi, modifier: Modifier = Modifier) {
     var prompt by remember { mutableStateOf("") }
@@ -84,91 +111,91 @@ fun ChatScreen(chatBotApi: ChatBotApi, modifier: Modifier = Modifier) {
     val coroutineScope = rememberCoroutineScope()
     var isThinking by remember { mutableStateOf(false) }
 
-        Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
-            LazyColumn(
-                state = chatState,
-                modifier = Modifier.weight(1f)
-            ) {
-                items(chat.size) { index ->
-                    MessageCard(chat[index])
-                }
-
-                if (isThinking) {
-                    item {
-                        MessageCard(ChatMessage(MessageType.THINKING, ""))
-                    }
-                }
+    Column(modifier = modifier.fillMaxSize().imeNestedScroll().padding(16.dp)) {
+        LazyColumn(
+            state = chatState,
+            modifier = Modifier.weight(1f)
+        ) {
+            items(chat.size) { index ->
+                MessageCard(chat[index])
             }
-            Spacer(modifier = Modifier.padding(8.dp))
-            Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)) {
-                TextField(
-                    value = prompt,
-                    onValueChange = { prompt = it },
-                    label = { Text("Please, ask something") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    )
-                )
-                IconButton(
-                    onClick = {
-                        isThinking = true
-                        val promptNormalized = prompt.trim()
-                        val request = ChatBotRequest("deepseek-r1:8b", false, promptNormalized)
-                        chat = chat + ChatMessage(MessageType.REQUEST, promptNormalized)
-                        prompt = ""
-                        chatBotApi.generate(request).enqueue(object : Callback<ChatBotResponse> {
-                            override fun onResponse(
-                                call: Call<ChatBotResponse>,
-                                response: Response<ChatBotResponse>
-                            ) {
-                                chat = if (response.isSuccessful) {
-                                    chat + ChatMessage(
-                                        MessageType.RESPONSE,
-                                        response.body()?.response ?: "No answer"
-                                    )
-                                } else {
-                                    chat + ChatMessage(
-                                        MessageType.ERROR,
-                                        "Error code: ${response.code()}, Message: ${response.message()}"
-                                    )
-                                }
-                                isThinking = false
-                                coroutineScope.launch {
-                                    chatState.animateScrollToItem(chat.size - 1)
-                                }
-                            }
 
-                            override fun onFailure(call: Call<ChatBotResponse>, t: Throwable) {
-                                chat =
-                                    chat + ChatMessage(
-                                        MessageType.ERROR,
-                                        "${t.message}"
-                                    )
-                                isThinking = false
-                                coroutineScope.launch {
-                                    chatState.animateScrollToItem(chat.size - 1)
-                                }
-                            }
-                        })
-                    },
-                    enabled = !isThinking && prompt.trim().isNotEmpty(),
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .height(56.dp)
-                        .width(56.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_send),
-                        contentDescription = "Send"
-                    )
+            if (isThinking) {
+                item {
+                    MessageCard(ChatMessage(MessageType.THINKING, ""))
                 }
             }
         }
+        Spacer(modifier = Modifier.padding(8.dp))
+        Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).imePadding()) {
+            TextField(
+                value = prompt,
+                onValueChange = { prompt = it },
+                label = { Text("Please, ask something") },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+            IconButton(
+                onClick = {
+                    isThinking = true
+                    val promptNormalized = prompt.trim()
+                    val request = ChatBotRequest("deepseek-r1:8b", false, promptNormalized)
+                    chat = chat + ChatMessage(MessageType.REQUEST, promptNormalized)
+                    prompt = ""
+                    chatBotApi.generate(request).enqueue(object : Callback<ChatBotResponse> {
+                        override fun onResponse(
+                            call: Call<ChatBotResponse>,
+                            response: Response<ChatBotResponse>
+                        ) {
+                            chat = if (response.isSuccessful) {
+                                chat + ChatMessage(
+                                    MessageType.RESPONSE,
+                                    response.body()?.response ?: "No answer"
+                                )
+                            } else {
+                                chat + ChatMessage(
+                                    MessageType.ERROR,
+                                    "Error code: ${response.code()}, Message: ${response.message()}"
+                                )
+                            }
+                            isThinking = false
+                            coroutineScope.launch {
+                                chatState.animateScrollToItem(chat.size - 1)
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ChatBotResponse>, t: Throwable) {
+                            chat =
+                                chat + ChatMessage(
+                                    MessageType.ERROR,
+                                    "${t.message}"
+                                )
+                            isThinking = false
+                            coroutineScope.launch {
+                                chatState.animateScrollToItem(chat.size - 1)
+                            }
+                        }
+                    })
+                },
+                enabled = !isThinking && prompt.trim().isNotEmpty(),
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .height(56.dp)
+                    .width(56.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_send),
+                    contentDescription = "Send"
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -179,12 +206,15 @@ fun MessageCard(message: ChatMessage) {
     if (message.type == MessageType.ERROR) {
         color = MaterialTheme.colorScheme.errorContainer
         titleColor = MaterialTheme.colorScheme.error
-    } else if (message.type == MessageType.REQUEST) color = MaterialTheme.colorScheme.primaryContainer
+    } else if (message.type == MessageType.REQUEST) color =
+        MaterialTheme.colorScheme.primaryContainer
 
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = color),
-        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
