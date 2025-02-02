@@ -122,15 +122,8 @@ fun ChatScreen(
             state = chatState,
             modifier = Modifier.weight(1f)
         ) {
-            items(chat.size) { index ->
-                MessageCard(chat[index])
-            }
-
-            if (isThinking) {
-                item {
-                    MessageCard(ChatMessage(MessageType.THINKING, ""))
-                }
-            }
+            items(chat.size) { index -> MessageCard(chat[index]) }
+            if (isThinking) item { MessageCard(ChatMessage(MessageType.THINKING, "")) }
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Row(modifier = Modifier
@@ -299,9 +292,7 @@ fun ChatScreenPreview() {
                             Response.success(ChatBotResponse("Hi, Android!"))
 
                         override fun request(): okhttp3.Request = okhttp3.Request.Builder().build()
-                        override fun timeout(): Timeout {
-                            TODO("Not yet implemented")
-                        }
+                        override fun timeout(): Timeout = Timeout()
                     }
                 }
             }
