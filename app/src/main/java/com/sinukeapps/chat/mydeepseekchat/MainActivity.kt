@@ -41,8 +41,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -104,14 +104,20 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ChatScreen(chatBotApi: ChatBotApi, modifier: Modifier = Modifier) {
-    var prompt by remember { mutableStateOf("") }
-    var chat by remember { mutableStateOf(listOf<ChatMessage>()) }
+fun ChatScreen(
+    chatBotApi: ChatBotApi,
+    modifier: Modifier = Modifier
+) {
+    var prompt by rememberSaveable { mutableStateOf(("")) }
+    var chat by rememberSaveable { mutableStateOf((listOf<ChatMessage>())) }
+    var isThinking by rememberSaveable { mutableStateOf((false)) }
     val chatState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    var isThinking by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier.fillMaxSize().imeNestedScroll().padding(16.dp)) {
+    Column(modifier = modifier
+        .fillMaxSize()
+        .imeNestedScroll()
+        .padding(16.dp)) {
         LazyColumn(
             state = chatState,
             modifier = Modifier.weight(1f)
@@ -127,7 +133,10 @@ fun ChatScreen(chatBotApi: ChatBotApi, modifier: Modifier = Modifier) {
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
-        Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).imePadding()) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .align(Alignment.CenterHorizontally)
+            .imePadding()) {
             TextField(
                 value = prompt,
                 onValueChange = { prompt = it },
@@ -236,7 +245,7 @@ fun DotsLoadingIndicator() {
     val dotCount = 3
     val dotSize = 8.dp
     val dotSpacing = 4.dp
-    val animationDuration = 300
+    val animationDuration = 500
 
     val infiniteTransition = rememberInfiniteTransition()
     val dotAlpha = (0 until dotCount).map { index ->
@@ -277,23 +286,25 @@ fun DotsLoadingIndicator() {
 @Composable
 fun ChatScreenPreview() {
     MyDeepSeekChatTheme {
-        ChatScreen(chatBotApi = object : ChatBotApi {
-            override fun generate(request: ChatBotRequest): Call<ChatBotResponse> {
-                return object : Call<ChatBotResponse> {
-                    override fun enqueue(callback: Callback<ChatBotResponse>) {}
-                    override fun isExecuted(): Boolean = false
-                    override fun clone(): Call<ChatBotResponse> = this
-                    override fun isCanceled(): Boolean = false
-                    override fun cancel() {}
-                    override fun execute(): Response<ChatBotResponse> =
-                        Response.success(ChatBotResponse("Hi, Android!"))
+        ChatScreen(
+            chatBotApi = object : ChatBotApi {
+                override fun generate(request: ChatBotRequest): Call<ChatBotResponse> {
+                    return object : Call<ChatBotResponse> {
+                        override fun enqueue(callback: Callback<ChatBotResponse>) {}
+                        override fun isExecuted(): Boolean = false
+                        override fun clone(): Call<ChatBotResponse> = this
+                        override fun isCanceled(): Boolean = false
+                        override fun cancel() {}
+                        override fun execute(): Response<ChatBotResponse> =
+                            Response.success(ChatBotResponse("Hi, Android!"))
 
-                    override fun request(): okhttp3.Request = okhttp3.Request.Builder().build()
-                    override fun timeout(): Timeout {
-                        TODO("Not yet implemented")
+                        override fun request(): okhttp3.Request = okhttp3.Request.Builder().build()
+                        override fun timeout(): Timeout {
+                            TODO("Not yet implemented")
+                        }
                     }
                 }
             }
-        })
+        )
     }
 }
