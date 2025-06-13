@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.1.182:31028")
+            .baseUrl("http://192.168.0.105:11434/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -147,7 +147,7 @@ fun ChatScreen(
                 onClick = {
                     isThinking = true
                     val promptNormalized = prompt.trim()
-                    val request = ChatBotRequest("deepseek-r1:8b", false, promptNormalized)
+                    val request = ChatBotRequest("llama3.2", promptNormalized, false)
                     chat = chat + ChatMessage(MessageType.REQUEST, promptNormalized)
                     prompt = ""
                     chatBotApi.generate(request).enqueue(object : Callback<ChatBotResponse> {

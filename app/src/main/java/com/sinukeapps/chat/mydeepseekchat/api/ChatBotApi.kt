@@ -8,7 +8,7 @@ import retrofit2.http.POST
 
 interface ChatBotApi {
 
-    @POST("/api/generate")
+    @POST("api/generate")
     fun generate(@Body request: ChatBotRequest): Call<ChatBotResponse>
 
 }
