@@ -1,15 +1,15 @@
-# 🤖 DeepSeek Local ChatBot Android App
+# 🤖 Llama3.2 Local ChatBot Android App
 
 [![Android](https://img.shields.io/badge/Android-API%2033+-green.svg)](https://developer.android.com/about/versions/android-13)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-blue.svg)](https://kotlinlang.org/)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-2024.04.01-orange.svg)](https://developer.android.com/jetpack/compose)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A modern Android application that provides a chat interface to interact with local DeepSeek AI models through Ollama. Built with Jetpack Compose and Material Design 3, this app offers a seamless chat experience with your local AI assistant.
+A modern Android application that provides a chat interface to interact with local Llama3.2 AI models through Ollama. Built with Jetpack Compose and Material Design 3, this app offers a seamless chat experience with your local AI assistant.
 
 ## ✨ Features
 
-- **🤖 Local AI Chat**: Interact with DeepSeek models running locally via Ollama
+- **🤖 Local AI Chat**: Interact with Llama3.2 models running locally via Ollama
 - **🎨 Modern UI**: Beautiful Material Design 3 interface with Jetpack Compose
 - **🌙 Dark/Light Theme**: Automatic theme switching based on system preferences
 - **💬 Real-time Chat**: Send messages and receive AI responses in real-time
@@ -31,16 +31,16 @@ A modern Android application that provides a chat interface to interact with loc
 Before running this app, you need to set up:
 
 1. **Ollama Server**: Install and run [Ollama](https://ollama.com/) on your local machine
-2. **DeepSeek Model**: Pull the DeepSeek model using:
+2. **Llama3.2 Model**: Pull the Llama3.2 model using:
    ```bash
-   ollama pull deepseek-r1:8b
+   ollama pull llama3.2
    ```
 3. **Network Access**: Ensure your Android device can access the Ollama server (same network or localhost)
 
 ## 🛠️ Installation
 
 ### Option 1: Download APK
-1. Download the latest APK from the [Releases](https://github.com/yourusername/deepseek-local-chatbot-android-app/releases) page
+1. Download the latest APK from the [Releases](https://github.com/yourusername/Local-Andriod-Chatbot/releases) page
 2. Enable "Install from Unknown Sources" in your Android settings
 3. Install the APK file
 
@@ -48,8 +48,8 @@ Before running this app, you need to set up:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/deepseek-local-chatbot-android-app.git
-   cd deepseek-local-chatbot-android-app
+   git clone https://github.com/yourusername/Local-Andriod-Chatbot.git
+   cd Local-Andriod-Chatbot
    ```
 
 2. **Open in Android Studio**
@@ -90,9 +90,9 @@ Before running this app, you need to set up:
    ollama serve
    ```
 
-3. **Pull DeepSeek Model**:
+3. **Pull Llama3.2 Model**:
    ```bash
-   ollama pull deepseek-r1:8b
+   ollama pull llama3.2
    ```
 
 ### Network Configuration
@@ -142,7 +142,7 @@ Content-Type: application/json
 **Request Body:**
 ```json
 {
-  "model": "deepseek-r1:8b",
+  "model": "llama3.2",
   "prompt": "Your message here",
   "stream": false
 }
@@ -180,7 +180,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - [Ollama](https://ollama.com/) for providing the local AI server
-- [DeepSeek](https://www.deepseek.com/) for the AI model
+- [Llama 3](https://llama.meta.com/) for the AI model
 - [Jetpack Compose](https://developer.android.com/jetpack/compose) for the modern UI framework
 - [Material Design 3](https://m3.material.io/) for the design system
 
@@ -188,7 +188,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/yourusername/deepseek-local-chatbot-android-app/issues) page
+1. Check the [Issues](https://github.com/yourusername/Local-Andriod-Chatbot/issues) page
 2. Create a new issue with detailed information
 3. Include your device model, Android version, and error logs
 
